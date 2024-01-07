@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Store',
+    'crispy_forms',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -120,8 +123,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR/'static'
 ]
-MEDIA_URL = '/image/'
-MEDIA_ROOT = BASE_DIR/"static/image"
+MEDIA_URL = '/images/'
+MEDIA_ROOT = BASE_DIR/"static/images"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

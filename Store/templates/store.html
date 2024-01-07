@@ -1,14 +1,14 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
 Home
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+<!-- <div class="container-fluid">
     <div class="row">
         <div class="col-md-2">
-            <!-- blank -->
         </div>
         <div class="col-md-2" style="border-radius: 25px;">
             <img src="#" alt="...">
@@ -16,7 +16,6 @@ Home
             <button type="button" class="btn btn-primary">Add to cart</button>
         </div>
         <div class="col-md-1">
-            <!-- blank -->
         </div>
         <div class="col-md-2" style="border-radius: 25px;">
             <img src="#" alt="...">
@@ -24,7 +23,6 @@ Home
             <button type="button" class="btn btn-primary">Add to cart</button>
         </div>
         <div class="col-md-1">
-            <!-- blank -->
         </div>
         <div class="col-md-2" style="border-radius: 25px;">
             <img src="#" alt="...">
@@ -32,8 +30,42 @@ Home
             <button type="button" class="btn btn-primary">Add to cart</button>
         </div>
         <div class="col-md-2">
-            <!-- blank -->
         </div>
     </div>
+</div> -->
+
+<h2>Sản phẩm</h2>
+<!-- {% for x in Product %} 
+    <div class="col-sm-4">
+        <img src="{{x.image}}" alt="{{x.name}}"> <br>
+        {{ x.name }} <br>
+        {{ x.price }}đ
+    </div>
+{% endfor %} -->
+
+{% for product in products %}
+    <div class="col-sm-4">
+        <img src="{% static 'images/ProductImage/{{product.image}}' %}" alt="{{product.name}}"> <br>
+        {{ product.name }} <br>
+        {{ product.price }}đ
+    </div>
+{% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if products.has_previous %}
+            <a href="?page={{ products.previous_page_number }}">Previous</a>
+        {% endif %}
+    </span>
+
+    <span class="current">
+        Page {{ products.number }} of {{ products.paginator.num_pages }}.
+    </span>
+
+    <span>
+        {% if products.has_next %}
+            <a href="?page={{ product.next_page_number }}Next"></a>
+        {% endif %}
+    </span>
 </div>
 {% endblock %}
