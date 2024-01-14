@@ -27,8 +27,13 @@ def Store(request):
 
     return render(request, 'store.html', {'products': products})
 
-def Cart(request):
-    return render(request, 'cart.html')
+def cart_view(request):
+    if request.user.is_authenticated:     #new
+        customer = request.user.customer 
+        cart_view, created = Cart.objects.get_or_create(customer = customer, completed = False)
+        cartitems = cart_view.cartitems_set.all()
+
+    return render(request, 'cart.html', {'cartitems' : cartitems, 'cart':cart_view})
 
 def Checkout(request):
     return render(request, 'checkout.html')

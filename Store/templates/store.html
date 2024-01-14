@@ -43,13 +43,15 @@ Home
     </div>
 {% endfor %} -->
 
-{% for product in products %}
-    <div class="col-sm-4">
-        <img src="{% static 'images/ProductImage/{{product.image}}' %}" alt="{{product.name}}"> <br>
-        {{ product.name }} <br>
-        {{ product.price }}đ
-    </div>
-{% endfor %}
+<div class="row">
+    {% for product in products %}
+        <div class="col-sm-4">
+            <img src="{% static 'images/' %}{{ product.image }}" alt="{{product.name}}"> <br>
+            <a href="#">{{ product.name }}</a><br>
+            {{ product.price }}đ
+        </div>
+    {% endfor %}
+</div>
 
 <div class="pagination">
     <span class="step-links">
