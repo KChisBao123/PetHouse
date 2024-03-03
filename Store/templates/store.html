@@ -45,13 +45,16 @@ Home
 
 <div class="row">
     {% for product in products %}
-        <div class="col-sm-4">
+        <div class="col-sm-4    ">
             <img src="{% static 'images/' %}{{ product.image }}" alt="{{product.name}}"> <br>
             <a href="#">{{ product.name }}</a><br>
-            {{ product.price }}đ
+            {{ product.price }}đ <br>
+            <button data-product = {{product.id}} data-action ="add" class="btn btn-outline-secondary add-btn addtocart" >Add to Cart</button>            
         </div>
     {% endfor %}
 </div>
+
+<button data-product = {{product.id}} data-action ="add" class="btn btn-outline-secondary add-btn addtocart" >Add to Cart</button>            
 
 <div class="pagination">
     <span class="step-links">

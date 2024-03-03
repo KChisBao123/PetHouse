@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import NewUserForm
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse
@@ -28,12 +28,16 @@ def Store(request):
     return render(request, 'store.html', {'products': products})
 
 def cart_view(request):
-    if request.user.is_authenticated:     #new
-        customer = request.user.customer 
-        cart_view, created = Cart.objects.get_or_create(customer = customer, completed = False)
-        cartitems = cart_view.cartitems_set.all()
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        cart, created = Cart.objects.get_or_create(customer = customer, completed = False)
+        cartitems = cart.cartitems_set.all()
+    else:
+        cartitems = []
+        cart = {"get_cart_total": 0, "get_itemtotal": 0}
 
-    return render(request, 'cart.html', {'cartitems' : cartitems, 'cart':cart_view})
+
+    return render(request, 'cart.html', {'cartitems' : cartitems, 'cart':cart})
 
 def Checkout(request):
     return render(request, 'checkout.html')

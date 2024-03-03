@@ -1,41 +1,66 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
-import random
 
+from django.db.models.lookups import IntegerFieldFloatRounding
 # Create your models here.
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     email = models.EmailField()
-    nphone = models.TextField(max_length=11)
 
-def generate_cart_id():
-    namespace = uuid.UUID('6ba7b811-9dad-11d1-80b4-00c04fd430c8')  
-    name = 'cart_id'  
-    random_part = str(random.randint(1, 1000))
-    return str(uuid.uuid5(namespace, name + random_part))
+    def __str__(self):
+        return self.name
+
+class Product(models.Model):
+    name =  models.CharField(max_length=50)
+    price = models.FloatField(default=10.55)
+    image = models.ImageField()
+
+    def __str__(self):
+        return self.name
 
 class Cart(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    cart_id = models.UUIDField(default=generate_cart_id, unique=True, editable=False)
+    cart_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     completed = models.BooleanField(default=False)
 
-class Product(models.Model):
-    name = models.CharField(max_length=255)
-    price = models.FloatField(default=10.55)
-    description = models.TextField()
-    image = models.ImageField()
+    def get_cart_total(self):
+        cartitems = self.cartitems_set.all()
+        total = sum([item.get_total for item in cartitems])
+        return total
+
+    def get_itemtotal(self):
+        cartitems = self.cartitems_set.all()
+        total = sum([item.quantity for item in cartitems])
+        return total
+
+    def __str__(self):
+        return str(self.id)
+
+class CartItems(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product =  models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0)
+
+    def get_total(self):
+        total = self.quantity * self.product.price
+        if total == 0.00:
+            self.delete()
+        return total
+
+    
+
+    def __str__(self):
+        return self.product.name
 
 class ShippingAddress(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    address = models.TextField()
+    address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
-    district = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
     zipcode = models.CharField(max_length=100)
 
-class CartItems(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=0)
+    def __str__(self):
+        return self.address
