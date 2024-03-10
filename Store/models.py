@@ -27,7 +27,7 @@ class Cart(models.Model):
 
     def get_cart_total(self):
         cartitems = self.cartitems_set.all()
-        total = sum([item.get_total for item in cartitems])
+        total = sum([item.get_total() for item in cartitems])
         return total
 
     def get_itemtotal(self):
@@ -49,10 +49,9 @@ class CartItems(models.Model):
             self.delete()
         return total
 
-    
-
     def __str__(self):
         return self.product.name
+
 
 class ShippingAddress(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)

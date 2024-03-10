@@ -8,6 +8,9 @@ from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponseRedirect 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Customer, Cart, Product, CartItems
+from django.http import JsonResponse
+import json
+import requests
 
 # Create your views here.
 def Store(request):
@@ -33,11 +36,10 @@ def cart_view(request):
         cart, created = Cart.objects.get_or_create(customer = customer, completed = False)
         cartitems = cart.cartitems_set.all()
     else:
+        cart = Cart.objects.create(completed=False)
         cartitems = []
-        cart = {"get_cart_total": 0, "get_itemtotal": 0}
 
-
-    return render(request, 'cart.html', {'cartitems' : cartitems, 'cart':cart})
+    return render(request, 'cart.html', {'cartitems': cartitems, 'cart': cart})
 
 def Checkout(request):
     return render(request, 'checkout.html')
@@ -51,3 +53,16 @@ def SignUp(request):
             form.save()
             return HttpResponseRedirect('/')
     return render(request, 'signup.html', {'form': form})
+
+def updateCart(request):
+    data = json.loads(request.body)
+    productId = data["productId"]
+    action = data["action"]
+    product = Product.objects.get(id=productId)
+    customer = request.user.customer
+    cart, created = Cart.objects.get_or_create(customer = customer, completed = False)
+    cartitem, created = CartItems.objects.get_or_create(cart = cart, product = product)
+    if action == "add":
+        cartitem.quantity += 1
+        cartitem.save()
+    return JsonResponse("Cart Updated", safe = False)
